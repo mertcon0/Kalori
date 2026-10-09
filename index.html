@@ -70,6 +70,7 @@ h2{font-size:16px;margin:0 0 12px;display:flex;justify-content:space-between;ali
 .hint{color:var(--mute);font-size:13px;margin:8px 0 0}
 .msg{font-size:13px;margin-top:8px;min-height:18px;color:var(--ok)}
 [hidden]{display:none!important}
+.once .kcal{max-width:110px}
 .top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .top h1{margin:0}
 .burger{width:44px;height:44px;background:var(--card);color:var(--ink);border:1px solid var(--line);font-size:22px;line-height:1;flex:none}
@@ -94,6 +95,15 @@ h2{font-size:16px;margin:0 0 12px;display:flex;justify-content:space-between;ali
       <div class="big"><span id="eaten">0</span> <small>/ <span id="goalTxt">2000</span> kcal</small></div>
       <div class="bar" id="bar"><i id="fill"></i></div>
       <div class="status" id="status"></div>
+    </section>
+
+    <section class="card once">
+      <h2>Tek seferlik ekle</h2>
+      <div class="row">
+        <input id="oname" placeholder="Yemek adı" aria-label="Yemek adı">
+        <input id="okcal" class="kcal" type="number" inputmode="numeric" min="0" placeholder="kcal" aria-label="Kalori">
+      </div>
+      <button class="btn" id="addOnce" style="width:100%;margin-top:8px">Bugüne ekle</button>
     </section>
 
     <section class="card">
@@ -277,6 +287,13 @@ $("exp").onclick = async () => {
   a.href = URL.createObjectURL(new Blob([text], { type: "application/json" })); a.download = filename;
   document.body.appendChild(a); a.click(); a.remove(); say("Dosya indirildi.");
 };
+$("addOnce").onclick = () => {
+  const kcal = Number($("okcal").value);
+  if ($("okcal").value === "" || !(kcal >= 0)) { $("okcal").focus(); return; }
+  add($("oname").value.trim() || "Diğer", kcal);
+  $("oname").value = ""; $("okcal").value = ""; $("oname").focus();
+};
+$("okcal").addEventListener("keydown", e => { if (e.key === "Enter") $("addOnce").click(); });
 $("imp").onclick = () => $("file").click();
 $("file").onchange = async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
